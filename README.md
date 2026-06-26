@@ -62,10 +62,6 @@ Run `ab <group> --help` for subcommands. Familiar `az` conventions are supported
 - [Migration from the bash script](docs/migration.md)
 - [Claude Code workflows](docs/claude-code.md)
 
-## Legacy
-
-The `ado` bash script in the repo root is the legacy predecessor, kept as a behavioral reference. See [docs/migration.md](docs/migration.md) for the command mapping.
-
 ## License
 
 MIT
