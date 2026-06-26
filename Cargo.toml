@@ -1,0 +1,51 @@
+[package]
+name = "azure-boards-cli"
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.82"
+license = "MIT"
+description = "Rust-native Azure Boards CLI for tracking work items, planning sprints, prioritizing backlogs, and automating developer workflows."
+repository = "https://github.com/colelandolt/azure-boards-cli"
+
+[[bin]]
+name = "azure-boards"
+path = "src/main.rs"
+
+[[bin]]
+name = "ab"
+path = "src/main.rs"
+
+[dependencies]
+azure_devops_rust_api = { version = "0.38", features = ["wit", "work", "core", "profile"] }
+azure_core = "1"
+azure_identity = "1"
+async-trait = "0.1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }
+clap = { version = "4.5", features = ["derive", "env", "wrap_help"] }
+clap_complete = "4.5"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls", "gzip"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+serde_norway = "0.9"
+toml = "0.8"
+jmespath = "0.3"
+keyring = { version = "3.6", features = ["sync-secret-service", "vendored"] }
+dirs = "6"
+thiserror = "2"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+time = { version = "0.3", features = ["serde", "parsing", "formatting", "macros", "local-offset"] }
+percent-encoding = "2"
+base64 = "0.22"
+unicode-width = "0.2"
+open = "5"
+pulldown-cmark = { version = "0.12", default-features = false, features = ["html"] }
+
+[dev-dependencies]
+wiremock = "0.6"
+assert_cmd = "2"
+predicates = "3"
+
+[profile.release]
+strip = true
+lto = "thin"
