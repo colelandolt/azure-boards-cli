@@ -1,0 +1,54 @@
+# Example iteration plan reproducing the legacy bash script's hardcoded 2026
+# schedule (quarters + TV-show sprints). Apply with:
+#
+#   ab iteration import --file examples/sprints-2026.yaml --dry-run
+#   ab iteration import --file examples/sprints-2026.yaml
+#
+# The schema is generic: any nesting depth, any names, optional dates
+# (start/finish must come as a pair). Set update-existing: true to PATCH
+# dates on nodes that already exist.
+root: ""
+update-existing: false
+nodes:
+  - name: "2026 Q1"
+    start: 2026-01-01
+    finish: 2026-03-31
+    children:
+      - { name: "Arrested Development", start: 2025-12-29, finish: 2026-01-09 }
+      - { name: "Breaking Bad",         start: 2026-01-12, finish: 2026-01-23 }
+      - { name: "Curb Your Enthusiasm", start: 2026-01-26, finish: 2026-02-06 }
+      - { name: "Deadwood",             start: 2026-02-09, finish: 2026-02-20 }
+      - { name: "Extras",               start: 2026-02-23, finish: 2026-03-06 }
+      - { name: "Fargo",                start: 2026-03-09, finish: 2026-03-20 }
+      - { name: "Game of Thrones",      start: 2026-03-23, finish: 2026-04-03 }
+  - name: "2026 Q2"
+    start: 2026-04-01
+    finish: 2026-06-30
+    children:
+      - { name: "House",       start: 2026-04-06, finish: 2026-04-17 }
+      - { name: "Invincible",  start: 2026-04-20, finish: 2026-05-01 }
+      - { name: "Justified",   start: 2026-05-04, finish: 2026-05-15 }
+      - { name: "Killing Eve", start: 2026-05-18, finish: 2026-05-29 }
+      - { name: "Lost",        start: 2026-06-01, finish: 2026-06-12 }
+      - { name: "Mad Men",     start: 2026-06-15, finish: 2026-06-26 }
+  - name: "2026 Q3"
+    start: 2026-07-01
+    finish: 2026-09-30
+    children:
+      - { name: "Narcos",         start: 2026-06-29, finish: 2026-07-10 }
+      - { name: "Ozark",          start: 2026-07-13, finish: 2026-07-24 }
+      - { name: "Peaky Blinders", start: 2026-07-27, finish: 2026-08-07 }
+      - { name: "Queen's Gambit", start: 2026-08-10, finish: 2026-08-21 }
+      - { name: "Rings of Power", start: 2026-08-24, finish: 2026-09-04 }
+      - { name: "Sopranos",       start: 2026-09-07, finish: 2026-09-18 }
+      - { name: "Ted Lasso",      start: 2026-09-21, finish: 2026-10-02 }
+  - name: "2026 Q4"
+    start: 2026-10-01
+    finish: 2026-12-31
+    children:
+      - { name: "Undone",       start: 2026-10-05, finish: 2026-10-16 }
+      - { name: "Veep",         start: 2026-10-19, finish: 2026-10-30 }
+      - { name: "Westworld",    start: 2026-11-02, finish: 2026-11-13 }
+      - { name: "X-Files",      start: 2026-11-16, finish: 2026-11-27 }
+      - { name: "Yellowstone",  start: 2026-11-30, finish: 2026-12-11 }
+      - { name: "ZeroZeroZero", start: 2026-12-14, finish: 2026-12-25 }
