@@ -24,10 +24,12 @@ async fn run_ab(server_uri: &str, args: &[&str]) -> (i32, String, String) {
             "ADO_TOKEN",
             "AZURE_DEVOPS_EXT_PAT",
             "AZURE_BOARDS_CLIENT_ID",
+            "AZURE_BOARDS_CONFIG_DIR",
         ] {
             command.env_remove(var);
         }
         let out = command
+            .env("AZURE_BOARDS_CONFIG_DIR", tmp.join("config"))
             .env("HOME", &tmp)
             .env("XDG_CONFIG_HOME", tmp.join(".config"))
             .env("NO_COLOR", "1")

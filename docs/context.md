@@ -15,7 +15,10 @@ Every command needs an organization, usually a project, and sometimes a team. Ea
 
 ## User config
 
-`~/.config/azure-boards/config.toml` (set via `ab configure --defaults k=v ...`):
+`~/.config/azure-boards/config.toml` (set via `ab configure --defaults k=v ...`). The
+location follows the OS convention (`%APPDATA%\azure-boards` on Windows) and can be
+overridden with the `AZURE_BOARDS_CONFIG_DIR` environment variable — useful for pinning a
+custom location or for fully isolated, scripted environments:
 
 ```toml
 [defaults]

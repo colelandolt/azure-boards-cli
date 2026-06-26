@@ -42,6 +42,15 @@ pub struct RepoConfig {
 }
 
 pub fn config_dir() -> PathBuf {
+    // `AZURE_BOARDS_CONFIG_DIR` overrides the config/credentials location. This
+    // is the only portable way to relocate it on Windows, where
+    // `dirs::config_dir()` reads the known-folder API and ignores HOME/XDG —
+    // used by hermetic tests and available to users who want a custom location.
+    if let Some(dir) = std::env::var_os("AZURE_BOARDS_CONFIG_DIR") {
+        if !dir.is_empty() {
+            return PathBuf::from(dir);
+        }
+    }
     dirs::config_dir()
         .unwrap_or_else(|| PathBuf::from("."))
         .join("azure-boards")

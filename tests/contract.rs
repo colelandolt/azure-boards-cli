@@ -17,12 +17,17 @@ fn ab() -> Command {
         "AZURE_DEVOPS_EXT_PAT",
         "AZURE_BOARDS_CLIENT_ID",
         "AZURE_BOARDS_API_BASE",
+        "AZURE_BOARDS_CONFIG_DIR",
     ] {
         cmd.env_remove(var);
     }
+    // Isolate config via AZURE_BOARDS_CONFIG_DIR: on Windows dirs::config_dir()
+    // ignores HOME/XDG and would read/write the real per-user config.
     let tmp = std::env::temp_dir().join(format!("ab-test-home-{}", std::process::id()));
-    std::fs::create_dir_all(&tmp).ok();
-    cmd.env("HOME", &tmp)
+    let cfg = tmp.join("config");
+    std::fs::create_dir_all(&cfg).ok();
+    cmd.env("AZURE_BOARDS_CONFIG_DIR", &cfg)
+        .env("HOME", &tmp)
         .env("XDG_CONFIG_HOME", tmp.join(".config"))
         .env("NO_COLOR", "1");
     cmd
@@ -488,13 +493,12 @@ fn non_services_org_rejected_exit_7() {
 #[test]
 fn configure_and_context_roundtrip() {
     let tmp = std::env::temp_dir().join(format!("ab-cfg-{}", std::process::id()));
-    std::fs::create_dir_all(&tmp).ok();
-    let config_home = tmp.join(".config");
+    let cfg = tmp.join("config");
+    std::fs::create_dir_all(&cfg).ok();
+    // Write to an isolated config dir on every platform (Windows ignores XDG).
     let mut set = Command::cargo_bin("azure-boards").unwrap();
-    set.env_clear()
-        .env("PATH", std::env::var("PATH").unwrap_or_default())
-        .env("HOME", &tmp)
-        .env("XDG_CONFIG_HOME", &config_home)
+    set.env("AZURE_BOARDS_CONFIG_DIR", &cfg)
+        .env("NO_COLOR", "1")
         .args([
             "configure",
             "--defaults",
@@ -505,10 +509,10 @@ fn configure_and_context_roundtrip() {
         .success();
     let mut show = Command::cargo_bin("azure-boards").unwrap();
     let assert = show
-        .env_clear()
-        .env("PATH", std::env::var("PATH").unwrap_or_default())
-        .env("HOME", &tmp)
-        .env("XDG_CONFIG_HOME", &config_home)
+        .env_remove("ADO_ORG")
+        .env_remove("ADO_PROJECT")
+        .env("AZURE_BOARDS_CONFIG_DIR", &cfg)
+        .env("NO_COLOR", "1")
         .args(["context", "show", "--detect", "false", "--json"])
         .assert()
         .success();
