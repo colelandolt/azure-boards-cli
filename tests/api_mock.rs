@@ -12,9 +12,22 @@ async fn run_ab(server_uri: &str, args: &[&str]) -> (i32, String, String) {
     tokio::task::spawn_blocking(move || {
         let tmp = std::env::temp_dir().join(format!("ab-mock-home-{}", std::process::id()));
         std::fs::create_dir_all(&tmp).ok();
-        let out = std::process::Command::new(env!("CARGO_BIN_EXE_azure-boards"))
-            .env_clear()
-            .env("PATH", std::env::var("PATH").unwrap_or_default())
+        // Do NOT env_clear(): on Windows that strips SystemRoot and breaks the
+        // child process's networking, so it can never reach the mock server.
+        // Remove only the vars that would interfere; the explicit ADO_PAT below
+        // pins auth to the env-PAT path.
+        let mut command = std::process::Command::new(env!("CARGO_BIN_EXE_azure-boards"));
+        for var in [
+            "ADO_ORG",
+            "ADO_PROJECT",
+            "ADO_TEAM",
+            "ADO_TOKEN",
+            "AZURE_DEVOPS_EXT_PAT",
+            "AZURE_BOARDS_CLIENT_ID",
+        ] {
+            command.env_remove(var);
+        }
+        let out = command
             .env("HOME", &tmp)
             .env("XDG_CONFIG_HOME", tmp.join(".config"))
             .env("NO_COLOR", "1")

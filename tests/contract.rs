@@ -5,12 +5,24 @@ use assert_cmd::Command;
 
 fn ab() -> Command {
     let mut cmd = Command::cargo_bin("azure-boards").expect("binary builds");
-    // Hermetic environment: no real config, no env credentials, no detection.
+    // Hermetic environment WITHOUT env_clear(): on Windows, clearing the whole
+    // environment strips SystemRoot and breaks all networking (winsock/DNS), so
+    // we only remove the vars that would influence context/auth resolution.
+    for var in [
+        "ADO_ORG",
+        "ADO_PROJECT",
+        "ADO_TEAM",
+        "ADO_PAT",
+        "ADO_TOKEN",
+        "AZURE_DEVOPS_EXT_PAT",
+        "AZURE_BOARDS_CLIENT_ID",
+        "AZURE_BOARDS_API_BASE",
+    ] {
+        cmd.env_remove(var);
+    }
     let tmp = std::env::temp_dir().join(format!("ab-test-home-{}", std::process::id()));
     std::fs::create_dir_all(&tmp).ok();
-    cmd.env_clear()
-        .env("PATH", std::env::var("PATH").unwrap_or_default())
-        .env("HOME", &tmp)
+    cmd.env("HOME", &tmp)
         .env("XDG_CONFIG_HOME", tmp.join(".config"))
         .env("NO_COLOR", "1");
     cmd
